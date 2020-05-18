@@ -55,7 +55,7 @@
                 v-for="(item,index) in yygg"
                 :key="index"
               >
-                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+                <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9" @click="xiangqing(item.NoticeID)">
                   <span class="iconfont icon-jiantou" style="color:#1e58fa"></span>
                   <span class="yygg_neirong_name">{{item.Title}}</span>
 
@@ -299,6 +299,10 @@ export default {
       console.log(data)
       this.yuyues = data
     
+    },
+    xiangqing:function(e){
+      console.log(e)
+      this.$router.push({name:"xiangqing",query: { id: e}})
     }
   }
 };

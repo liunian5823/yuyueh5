@@ -1,6 +1,5 @@
 <template>
   <div class="asd">
-    
     <div class="quanti">
       <div class="zhuti">
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 hsd">
@@ -14,11 +13,11 @@
                 <label for="firstname" class="col-sm-1 control-label" style="padding:0px">
                   <span class="iconfont icon-taicangsifa-" style="font-size:22px;color:#494cff"></span>
                 </label>
-                <div class="col-sm-8" style="padding:0px">
+                <div class="col-sm-7" style="padding:0px">
                   <input type="text" class="form-control" placeholder="请输入您手机号" v-model="phone" />
                 </div>
-                <label for="firstname" class="col-sm-3 control-label" style="padding:0px">
-                  <span v-show="show" @click="yanzhengma">获取验证码</span>
+                <label for="firstname" class="col-sm-4 control-label" style="padding:0px">
+                  <span v-show="show" @click="yanzhengma" class="yanzhengmacss">获取验证码</span>
                   <span v-show="!show" class="count">{{count}} s</span>
                 </label>
               </div>
@@ -75,9 +74,15 @@
       @click="guanbi"
       v-show="zhezhaoceng"
     >
-      <div v-on:click.stop="doThis" class="col-xs-6 col-sm-6 col-md-6 col-6 xinxi">
+      <div v-on:click.stop class="xinxi">
         <img src="../image/zhucebeij.jpg" class="img-responsive center-block" alt />
-        <div class="xinxi_title"></div>
+        <div class="xinxi_title">
+          <span @click="gerenzhuce">个人注册</span>
+          <span @click="tuanduice">团队注册</span>
+        </div>
+        <div class="xinxi_neirong col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+        </div>
       </div>
     </div>
   </div>
@@ -173,11 +178,14 @@ export default {
         this.zhezhaoceng = false;
       }
     },
-    doThis: function() {
-      console.log("456");
-    },
     lijizhuce: function() {
       this.zhezhaoceng = true;
+    },
+    gerenzhuce: function() {
+      console.log("123");
+    },
+    tuanduice: function() {
+      console.log("456");
     }
   }
 };
@@ -185,6 +193,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
+.yanzhengmacss {
+  font-size: 12px;
+  float: right;
+}
+
 .quanti {
   width: 100%;
   height: 100%;
@@ -307,19 +320,39 @@ input:focus {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width :1200px;
+  min-width: 1200px;
 }
 
-.xinxi{
-  position :relative;
-  padding:0px
+.xinxi {
+  margin: 0 auto;
+  position: relative;
 }
-.xinxi_title{
-  position :absolute;
-  height 20px;
-  width 100%;
-  top:0px;
-  left:0px;
-  background :#000;
+
+.xinxi_title {
+  position: absolute;
+  height: 45px;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  background: #1e7dfd;
+  background: -moz-linear-gradient(left, #1e7dfd 0%, #2d3bfe 100%);
+  background: -webkit-linear-gradient(left, #1e7dfd 0%, #2d3bfe 100%);
+  background: linear-gradient(to right, #1e7dfd 0%, #2d3bfe 100%);
 }
+
+.xinxi_title span {
+  line-height: 45px;
+  color: #fff;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.xinxi_neirong {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 45px;
+  left: 0px;
+}
+
 </style>

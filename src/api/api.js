@@ -54,7 +54,6 @@ export default {
   },
   POST(url, params, siidas) {
     return new Promise((resolve, reject) => {
-      console.log(siidas)
       axios.post(url, qs.stringify(params), {
         headers: {
           'Authorization': siidas

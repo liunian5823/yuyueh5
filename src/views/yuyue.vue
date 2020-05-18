@@ -6,11 +6,10 @@
         <div class="block">
           <el-date-picker v-model="value1" type="date" placeholder="选择日期"></el-date-picker>
         </div>
-        <el-form ref="form" :model="form" class="timesss">
+        <el-form ref="form" class="timesss">
           <el-form-item>
-            <el-select v-model="form.daw" placeholder="请选择预约">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+            <el-select v-model="daws" placeholder="请选择预约">
+              <el-option v-for="(itme , index) in daw" :key="index" :label="itme" :value="itme"></el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -25,34 +24,58 @@
 </template>
 
 <script>
-// import { Message } from "element-ui";
+import { MessageBox } from "element-ui";
 export default {
   name: "yuyeu",
-  props: {
-    
-  },
+  props: {},
   data() {
     return {
-      form: {
-        daw: ""
-      },
-      value1: ""
+      daw: "",
+      value1: "",
+      daws: "",
+      id: ""
     };
   },
   computed: {},
   mounted: function() {},
   methods: {
     queding: function() {
-      this.$emit("fun", false);
+      var than = this;
+      var d = new Date(than.value1);
+      d = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+      var seid = localStorage.getItem("certificate");
+      var url = "https://www.hebkjcg.com/api/Appointment/Order";
+      var obj = {
+        NoticeID: than.id,
+        AppointmentDate: d,
+        AppointmentTime: than.daws,
+        Number: "1"
+      };
+      than.$baseAPI
+        .POST(url, obj, seid)
+        .then(response => {
+          console.log(response.Result);
+          if (response.Result == "1") {
+            MessageBox.alert(response.PromptMsg);
+            this.$emit("fun", false);
+          } else {
+            console.log("123");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          MessageBox.alert(err.PromptMsg);
+        });
     },
+
     asdwa: function() {
       this.$emit("fun", false);
     },
     doThis: function() {},
     huoqushijian: function(e) {
       var than = this;
+      than.id = e;
       var seid = localStorage.getItem("certificate");
-
       var url = "https://www.hebkjcg.com/api/Notice/NoticeGet";
       var obj = {
         NoticeID: e
@@ -60,10 +83,15 @@ export default {
       than.$baseAPI
         .GET(url, obj, seid)
         .then(response => {
-          console.log(response);
-          //   if (response.Result == "1") {
-
-          //   }
+          console.log(response.RetValue.AppointmentTime);
+          var obj = response.RetValue.AppointmentTime.replace(
+            /(,)(?=[^$])/g,
+            ","
+          ).split(",");
+          console.log(obj);
+          if (response.Result == "1") {
+            than.daw = obj;
+          }
         })
         .catch(err => {
           console.log(err);
@@ -134,6 +162,6 @@ export default {
   background: -webkit-linear-gradient(left, #2e79f8 0%, #323bf8 98%);
   background: linear-gradient(to right, #2e79f8 0%, #323bf8 98%);
   color: #fff;
-  border-radius: 0px;
+  border-radius: 9px;
 }
 </style>
