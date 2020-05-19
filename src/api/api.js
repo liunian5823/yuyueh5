@@ -39,13 +39,10 @@ axios.interceptors.response.use(
 export default {
   GET(url, params = {}, siidas) {
     return new Promise((resolve, reject) => {
+      axios.defaults.headers.common["Authorization"] = siidas;
       axios.get(url, {
         params: params
-      }, {
-        headers: {
-          'Authorization': siidas
-        }
-      }).then(response => {
+      },).then(response => {
         resolve(response)
       }).catch(err => {
         reject(err)
@@ -54,11 +51,8 @@ export default {
   },
   POST(url, params, siidas) {
     return new Promise((resolve, reject) => {
-      axios.post(url, qs.stringify(params), {
-        headers: {
-          'Authorization': siidas
-        }
-      }).then(res => {
+      axios.defaults.headers.common["Authorization"] = siidas;
+      axios.post(url, qs.stringify(params),).then(res => {
         resolve(res)
       }).catch(err => {
         reject(err)

@@ -34,17 +34,7 @@
                 </div>
               </div>
             </div>
-            <div
-              class="col-xs-6 col-sm-6 col-md-6 col--6 col-xs-offset-3 col-sm-offset-3 col-md-offset-3 col-lg-offset-3 hsds_jizhumima"
-            >
-              <div class="form-group asda">
-                <label
-                  for="firstname"
-                  class="col-xs-12 col-sm-12 col-md-12 col-12 control-label"
-                  style="padding:0px;color:#1d45fc"
-                >点击记住密码</label>
-              </div>
-            </div>
+  
             <div
               class="btn-group hsds_denglu col-xs-6 col-sm-6 col-md-6 col--6 col-xs-offset-3 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"
             >
