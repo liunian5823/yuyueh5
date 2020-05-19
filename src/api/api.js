@@ -30,6 +30,9 @@ axios.interceptors.response.use(
       case 400:
         Message.error("请求无效")
         break
+      case 403:
+        Message.error("权限不够，请联系管理员")
+        break
       default:
       // console.log(error.response.data.message)
     }
@@ -42,7 +45,7 @@ export default {
       axios.defaults.headers.common["Authorization"] = siidas;
       axios.get(url, {
         params: params
-      },).then(response => {
+      }).then(response => {
         resolve(response)
       }).catch(err => {
         reject(err)
@@ -52,7 +55,7 @@ export default {
   POST(url, params, siidas) {
     return new Promise((resolve, reject) => {
       axios.defaults.headers.common["Authorization"] = siidas;
-      axios.post(url, qs.stringify(params),).then(res => {
+      axios.post(url, qs.stringify(params)).then(res => {
         resolve(res)
       }).catch(err => {
         reject(err)
