@@ -67,7 +67,7 @@ export default {
     huoquxiangqing() {
       var than = this;
       var a = than.$route.query.id;
-      console.log(a);
+      //console.log(a);
       than.id = a;
       var seid = localStorage.getItem("certificate");
       var url = "https://www.hebkjcg.com/api/Notice/NoticeGet";
@@ -77,7 +77,7 @@ export default {
       than.$baseAPI
         .GET(url, obj, seid)
         .then(response => {
-          console.log(response);
+          //console.log(response);
           if (response.Result == "1") {
             than.neirong = response.RetValue;
           }
@@ -90,7 +90,7 @@ export default {
     manyidu:function(){
       var than = this;
       var a = than.$route.query.id;
-      console.log(a);
+      //console.log(a);
       than.id = a;
       var seid = localStorage.getItem("certificate");
       var url = "https://www.hebkjcg.com/api/Appointment/GetEvaluateInfo";
@@ -100,12 +100,12 @@ export default {
       than.$baseAPI
         .GET(url, obj, seid)
         .then(response => {
-          console.log(response);
+          //console.log(response);
            if (response.Result == "1") {
             than.manyidus = response.RetValue;
           }else{
             var a = [0,0,0,0,0]
-             than.manyidus = a;
+             than.manyidus = a ;
           }
 
         })

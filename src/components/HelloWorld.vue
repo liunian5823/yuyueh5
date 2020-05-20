@@ -7,15 +7,20 @@
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
           <img src="../image/logo.png" alt />
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" v-if="dengluzt == '1'">
           <div class="btn-group zhuce">
-            <button type="button" class="btn btn-default zhuces" @click="zhuce">注册</button>
+            <router-link to="/denglu">
+              <button type="button" class="btn btn-default zhuces">注册</button>
+            </router-link>
           </div>
           <div class="btn-group denglu">
             <router-link to="/denglu">
               <button type="button" class="btn btn-default denglus">登录</button>
             </router-link>
           </div>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" v-if="dengluzt == '2'">
+          <span class="ynghuias">{{yonghuming}}</span>
         </div>
       </div>
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 tongzhi">
@@ -114,7 +119,7 @@
                 v-for="(item,index) in lsgg"
                 :key="index"
               >
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" @click="xiangqing(item.NoticeID)">
                   <span class="iconfont icon-jiantou" style="color:#1e58fa"></span>
                   <span class="yygg_neirong_name">{{item.Title}}</span>
                 </div>
@@ -143,15 +148,17 @@
       </div>
     </div>
     <!-- -------------------------------------------------------------- -->
-    <div class="dibucaidan"> <p>河北科技成果展示服务中心运营有限公司   备案号xxxxxxx</p>
-    <br/>
-    <p>技术支持：河北百汇广联科技服务有限公司</p></div>
+    <div class="dibucaidan">
+      <p>河北科技成果展示服务中心运营有限公司 备案号xxxxxxx</p>
+      <br />
+      <p>技术支持：河北百汇广联科技服务有限公司</p>
+    </div>
   </div>
 </template>
 
 <script>
 import yuyue from "../views/yuyue.vue";
-import { MessageBox } from 'element-ui';
+import { MessageBox } from "element-ui";
 export default {
   name: "HelloWorld",
   props: {
@@ -174,7 +181,9 @@ export default {
       yyxz: [],
       jstz: "",
       yuyues: false,
-      id: "0"
+      id: "0",
+      dengluzt: "",
+      yonghuming: ""
     };
   },
   computed: {
@@ -192,13 +201,13 @@ export default {
   },
   methods: {
     // denglu() {
-    //   console.log("点击进入登录");
+    //   //console.log("点击进入登录");
     // },
-    zhuce() {
-      console.log("点击进入注册");
-    },
+    // zhuce() {
+    //   console.log("点击进入注册");
+    // },
     xianshixiangq(e) {
-      console.log(e);
+      //console.log(e);
       // var than = this;
       var url = "https://www.hebkjcg.com/api/Notice/NoticeGet";
       var obj = {
@@ -207,17 +216,35 @@ export default {
       this.$baseAPI
         .GET(url, obj)
         .then(response => {
-          console.log(response);
+          //console.log(response);
           var name = response.RetValue.Content.replace(/<[^>]+>/g, "");
           var names = name.replace(/&nbsp;/g, "");
           var namess = names.replace(/&quot;/g, "");
-          MessageBox.alert(namess)
+          MessageBox.alert(namess);
         })
         .catch(err => {
           console.log(err);
         });
     },
     sendGetByObj() {
+      var seid = localStorage.getItem("certificate");
+
+      if (seid == null) {
+        this.dengluzt = "1";
+      } else {
+        this.dengluzt = "2";
+        var urls = "https://www.hebkjcg.com/api/User/Info";
+        var objs = {};
+        this.$baseAPI
+          .GET(urls, objs, seid)
+          .then(response => {
+            // console.log(response.RetValue.Name);
+            this.yonghuming = response.RetValue.Name;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
       var url = "https://www.hebkjcg.com/api/Notice/NoticeList";
       var obj = {
         type: "1",
@@ -228,7 +255,7 @@ export default {
       this.$baseAPI
         .GET(url, obj)
         .then(response => {
-          console.log(response.RetValue.data);
+          //console.log(response.RetValue.data);
           if (response.Result == "1") {
             this.yygg = response.RetValue.data;
             this.yyggzts = response.RetValue.count;
@@ -248,7 +275,7 @@ export default {
       this.$baseAPI
         .GET(url, obj)
         .then(response => {
-          console.log(response.RetValue.data);
+          //console.log(response.RetValue.data);
           if (response.Result == "1") {
             this.yyxz = response.RetValue.data;
             this.sendGetByObj2();
@@ -266,7 +293,7 @@ export default {
       this.$baseAPI
         .GET(url, obj)
         .then(response => {
-          console.log(response.RetValue.data);
+          //console.log(response.RetValue.data);
           if (response.Result == "1") {
             this.jstz = response.RetValue.data;
             this.sendGetByObj3();
@@ -286,7 +313,7 @@ export default {
       this.$baseAPI
         .GET(url, obj)
         .then(response => {
-          console.log(response.RetValue.data);
+          //console.log(response.RetValue.data);
           if (response.Result == "1") {
             this.lsgg = response.RetValue.data;
             this.lsggmysl = response.RetValue.count;
@@ -298,11 +325,11 @@ export default {
     },
     handleSizeChange: function(size) {
       this.pagesize = size;
-      console.log(this.pagesize); //每页下拉显示数据
+      //console.log(this.pagesize); //每页下拉显示数据
     },
     handleCurrentChange: function(currentPage3) {
       this.currentPage3 = currentPage3;
-      console.log(this.currentPage3); //点击第几页
+      //console.log(this.currentPage3); //点击第几页
       this.handleUserList();
     },
     handleUserList() {
@@ -318,7 +345,7 @@ export default {
       this.$baseAPI
         .GET(url, obj)
         .then(response => {
-          console.log(response.RetValue.data);
+          //console.log(response.RetValue.data);
           if (response.Result == "1") {
             this.yygg = response.RetValue.data;
             this.yyggzts = response.RetValue.count;
@@ -331,11 +358,11 @@ export default {
     },
     handleSizeChanges: function(size) {
       this.pagesize = size;
-      console.log(this.pagesize); //每页下拉显示数据
+      //console.log(this.pagesize); //每页下拉显示数据
     },
     handleCurrentChanges: function(currentPage3s) {
       this.currentPage3s = currentPage3s;
-      console.log(this.currentPage3s); //点击第几页
+      //console.log(this.currentPage3s); //点击第几页
       this.handleUserLists();
     },
     handleUserLists() {
@@ -349,7 +376,7 @@ export default {
       this.$baseAPI
         .GET(url, obj)
         .then(response => {
-          console.log(response.RetValue.data);
+          //console.log(response.RetValue.data);
           if (response.Result == "1") {
             this.lsgg = response.RetValue.data;
             this.lsggmysl = response.RetValue.count;
@@ -360,7 +387,7 @@ export default {
         });
     },
     yuyue: function(e) {
-      console.log(e);
+      //console.log(e);
       if (this.yuyues == false) {
         this.yuyues = true;
         this.$refs.child.huoqushijian(e);
@@ -373,7 +400,7 @@ export default {
       this.yuyues = data;
     },
     xiangqing: function(e) {
-      console.log(e);
+      //console.log(e);
       this.$router.push({ name: "xiangqing", query: { id: e } });
     }
   }
@@ -382,6 +409,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
+.ynghuias {
+  text-align: center;
+  color: #fff;
+  font-size: 17px;
+  width: 100%;
+  display: block;
+  line-height: 43px;
+}
+
 .zongti {
   overflow: hidden;
 }
@@ -399,7 +435,7 @@ export default {
 .dibudaohang {
   position: absolute;
   left: 0px;
-  bottom: 30px;
+  bottom: 18px;
 }
 
 .yygg_neirong_anniu {

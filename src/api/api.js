@@ -1,6 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import { Message } from 'element-ui';
+
 axios.interceptors.response.use(
   response => {
     return new Promise((resolve, reject) => {
@@ -13,8 +14,8 @@ axios.interceptors.response.use(
     })
   },
   error => {
-    console.log(error)
-    // console.log(message.Message)
+    //console.log(error)
+    // //console.log(message.Message)
     // Message.error("123")
     const status = error.response.status
     switch (status) {
@@ -31,10 +32,11 @@ axios.interceptors.response.use(
         Message.error("请求无效")
         break
       case 403:
-        Message.error("权限不够，请联系管理员")
+        Message.error("请先登录");
+        // router.push({ name: "denglu"});
         break
       default:
-      // console.log(error.response.data.message)
+      // //console.log(error.response.data.message)
     }
     return Promise.reject(error)
   }

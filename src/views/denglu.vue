@@ -34,7 +34,7 @@
                 </div>
               </div>
             </div>
-  
+
             <div
               class="btn-group hsds_denglu col-xs-6 col-sm-6 col-md-6 col--6 col-xs-offset-3 col-sm-offset-3 col-md-offset-3 col-lg-offset-3"
             >
@@ -71,7 +71,92 @@
           <span @click="tuanduice">团队注册</span>
         </div>
         <div class="xinxi_neirong col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+            v-if="zhucepd === '1'"
+          >
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="ruleForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="地区" prop="city">
+              <el-input v-model="ruleForm.city"></el-input>
+            </el-form-item>
+            <el-form-item label="年龄" prop="age">
+              <el-input v-model="ruleForm.age"></el-input>
+            </el-form-item>
+            <el-form-item label="性别" prop="resource">
+              <el-radio-group v-model="ruleForm.resource">
+                <el-radio label="男"></el-radio>
+                <el-radio label="女"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="ruleForm.email"></el-input>
+            </el-form-item>
+            <el-form-item label="所属领域" prop="territory">
+              <el-select v-model="ruleForm.territory" placeholder="请选择所属领域">
+                <el-option
+                  v-for="(item,index) in crowds"
+                  :key="index"
+                  :label="item.FieldName"
+                  :value="item.FieldID"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="所属人群" prop="crowd">
+              <el-select v-model="ruleForm.crowd" placeholder="请选所属人群">
+                <el-option
+                  v-for="(item,index) in territorys"
+                  :key="index"
+                  :label="item.PeopleName"
+                  :value="item.PeopleID"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="手机号" prop="phones">
+              <el-input v-model="ruleForm.phones" class="shuruk"></el-input>
+            </el-form-item>
+            <el-form-item label="验证码" prop="codes">
+              <el-input v-model="ruleForm.codes"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitForms('ruleForm')">立即创建</el-button>
+              <el-button @click="resetForm()">发送验证码</el-button>
+            </el-form-item>
+          </el-form>
+          <!-- --------------------------------------------------------------------------------- -->
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+            v-else
+          >
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="ruleForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="地区" prop="city">
+              <el-input v-model="ruleForm.city"></el-input>
+            </el-form-item>
+            <el-form-item label="总人数" prop="age">
+              <el-input v-model="ruleForm.age"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号" prop="phones">
+              <el-input v-model="ruleForm.phones" class="shuruk"></el-input>
+            </el-form-item>
+            <el-form-item label="验证码" prop="codes">
+              <el-input v-model="ruleForm.codes"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+              <el-button @click="resetForm()">发送验证码</el-button>
+            </el-form-item>
+          </el-form>
         </div>
       </div>
     </div>
@@ -92,11 +177,59 @@ export default {
       count: "",
       timer: null,
       code: "",
-      zhezhaoceng: false
+      zhezhaoceng: false,
+      territorys: "",
+      crowds: "",
+      citys: "",
+      zhucepd: "1",
+      ruleForm: {
+        name: "",
+        city: "",
+        age: "",
+        email: "",
+        territory: "",
+        crowd: "",
+        phones: "",
+        codes: "",
+        resource: ""
+      },
+      rules: {
+        name: [
+          { required: true, message: "请输入您的姓名", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+        ],
+        city: [
+          { required: true, message: "请输入城市名称", trigger: "blur" },
+          { min: 2, max: 15, message: "长度在 2 到 15 个字符", trigger: "blur" }
+        ],
+        age: [
+          { required: true, message: "请输入您的年龄", trigger: "blur" },
+          { min: 1, max: 3, message: "长度在 1 到 3 个字符", trigger: "blur" }
+        ],
+        email: [
+          { required: true, message: "请输入您的邮箱", trigger: "blur" },
+          { min: 7, max: 50, message: "长度错误", trigger: "blur" }
+        ],
+        phones: [
+          { required: true, message: "请输入您的手机号", trigger: "blur" },
+          { min: 11, max: 11, message: "请输入正确手机号", trigger: "blur" }
+        ],
+        codes: [
+          { required: true, message: "请输入您的验证码", trigger: "blur" },
+          { min: 6, max: 6, message: "请输入您的验证码", trigger: "blur" }
+        ],
+        resource: [
+          { required: true, message: "请选择您的性别", trigger: "change" }
+        ],
+        territory: [{ required: true, message: "所属领域", trigger: "change" }],
+        crowd: [{ required: true, message: "所属人群", trigger: "change" }]
+      }
     };
   },
   computed: {},
-  mounted: function() {},
+  mounted: function() {
+    this.huoqurenque();
+  },
   methods: {
     denglu: function() {
       if (!/^1[3456789]\d{9}$/.test(this.phone)) {
@@ -129,7 +262,7 @@ export default {
         });
     },
     yanzhengma: function() {
-      console.log(this.phone);
+      //console.log(this.phone);
       if (!/^1[3456789]\d{9}$/.test(this.phone)) {
         Message.error("请输入正确的手机号");
       } else {
@@ -173,9 +306,176 @@ export default {
     },
     gerenzhuce: function() {
       console.log("123");
+      this.zhucepd = "1";
     },
     tuanduice: function() {
       console.log("456");
+      this.zhucepd = "2";
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var Gender = "";
+
+          if (this.$refs[formName].fields[3].fieldValue == "男") {
+            Gender = "1";
+          } else {
+            Gender = "0";
+          }
+          var Area = "";
+          for (var i = 0; i < this.citys.length; i++) {
+            if (
+              this.citys[i].AreaName.search(
+                this.$refs[formName].fields[1].fieldValue
+              ) != -1
+            ) {
+              Area = this.citys[i].AreaID;
+              // console.log(this.citys[i].AreaID);
+            } else {
+              // 130100  默认id
+              Area = "130100";
+            }
+          }
+          console.log(Gender, Area);
+          var url = "https://www.hebkjcg.com/api/User/Register";
+          var obj = {
+            Phone: this.$refs[formName].fields[7].fieldValue,
+            Code: this.$refs[formName].fields[8].fieldValue,
+            Name: this.$refs[formName].fields[0].fieldValue,
+            Area: Area,
+            Type: "1",
+            Age: this.$refs[formName].fields[2].fieldValue,
+            Gender: Gender,
+            EMail: this.$refs[formName].fields[4].fieldValue,
+            FieldID: this.$refs[formName].fields[5].fieldValue,
+            PeopleID: this.$refs[formName].fields[6].fieldValue
+          };
+          this.$baseAPI
+            .POST(url, obj)
+            .then(response => {
+              Message.success(response.PromptMsg);
+            })
+            .catch(err => {
+              Message.error(err.PromptMsg);
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    submitForms(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var Gender = "";
+
+          if (this.$refs[formName].fields[3].fieldValue == "男") {
+            Gender = "1";
+          } else {
+            Gender = "0";
+          }
+          var Area = "";
+          for (var i = 0; i < this.citys.length; i++) {
+            if (
+              this.citys[i].AreaName.search(
+                this.$refs[formName].fields[1].fieldValue
+              ) != -1
+            ) {
+              Area = this.citys[i].AreaID;
+              // console.log(this.citys[i].AreaID);
+            } else {
+              // 130100  默认id
+              Area = "130100";
+            }
+          }
+          console.log(Gender, Area);
+          var url = "https://www.hebkjcg.com/api/User/Register";
+          var obj = {
+            Phone: this.$refs[formName].fields[7].fieldValue,
+            Code: this.$refs[formName].fields[8].fieldValue,
+            Name: this.$refs[formName].fields[0].fieldValue,
+            Area: Area,
+            Type: "2",
+            Age: this.$refs[formName].fields[2].fieldValue,
+         
+
+          };
+          this.$baseAPI
+            .POST(url, obj)
+            .then(response => {
+              Message.success(response.PromptMsg);
+            })
+            .catch(err => {
+              Message.error(err.PromptMsg);
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm() {
+      var than = this;
+      if (!/^1[3456789]\d{9}$/.test(than.ruleForm.phones)) {
+        Message.error("请输入正确的手机号");
+      } else {
+        var url = "https://www.hebkjcg.com/api/BasicData/SendSms";
+        var obj = {
+          Phone: than.ruleForm.phones
+        };
+        this.$baseAPI
+          .POST(url, obj)
+          .then(response => {
+            Message.success(response.PromptMsg);
+          })
+          .catch(err => {
+            Message.error(err.PromptMsg);
+          });
+      }
+    },
+    huoqurenque: function() {
+      var than = this;
+      var url = "https://www.hebkjcg.com/api/BasicData/People";
+      var obj = {};
+      this.$baseAPI
+        .GET(url, obj)
+        .then(response => {
+          console.log(response.PromptMsg);
+          than.territorys = response.RetValue;
+          than.huoqulingyu();
+        })
+        .catch(err => {
+          Message.error(err.PromptMsg);
+        });
+    },
+    huoqulingyu: function() {
+      var than = this;
+      var url = "https://www.hebkjcg.com/api/BasicData/Field";
+      var obj = {};
+      this.$baseAPI
+        .GET(url, obj)
+        .then(response => {
+          console.log(response.PromptMsg);
+          than.crowds = response.RetValue;
+          than.huoqudiqu();
+        })
+        .catch(err => {
+          Message.error(err.PromptMsg);
+        });
+    },
+    huoqudiqu: function() {
+      var than = this;
+      var url = "https://www.hebkjcg.com/api/BasicData/Area";
+      var obj = {};
+      this.$baseAPI
+        .GET(url, obj)
+        .then(response => {
+          console.log(response.PromptMsg);
+          than.citys = response.RetValue;
+        })
+        .catch(err => {
+          Message.error(err.PromptMsg);
+        });
     }
   }
 };
@@ -183,6 +483,23 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
+.shuruk {
+  position: relative;
+}
+
+.el-form-item {
+  width: 80%;
+  margin: 20px 0px 20px 25px;
+}
+
+.el-select {
+  width: 100%;
+}
+
+.el-input__inner {
+  display: none;
+}
+
 .yanzhengmacss {
   font-size: 12px;
   float: right;
@@ -344,5 +661,4 @@ input:focus {
   top: 45px;
   left: 0px;
 }
-
 </style>

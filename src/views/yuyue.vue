@@ -54,12 +54,12 @@ export default {
       than.$baseAPI
         .POST(url, obj, seid)
         .then(response => {
-          console.log(response.Result);
+          //console.log(response.Result);
           if (response.Result == "1") {
             MessageBox.alert(response.PromptMsg);
             this.$emit("fun", false);
           } else {
-            console.log("123");
+            //console.log("123");
           }
         })
         .catch(err => {
@@ -83,12 +83,12 @@ export default {
       than.$baseAPI
         .GET(url, obj, seid)
         .then(response => {
-          console.log(response.RetValue.AppointmentTime);
+          //console.log(response.RetValue.AppointmentTime);
           var obj = response.RetValue.AppointmentTime.replace(
             /(,)(?=[^$])/g,
             ","
           ).split(",");
-          console.log(obj);
+          //console.log(obj);
           if (response.Result == "1") {
             than.daw = obj;
           }
