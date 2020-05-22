@@ -41,31 +41,44 @@ export default {
   methods: {
     queding: function() {
       var than = this;
-      var d = new Date(than.value1);
-      d = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-      var seid = localStorage.getItem("certificate");
-      var url = "https://www.hebkjcg.com/api/Appointment/Order";
-      var obj = {
-        NoticeID: than.id,
-        AppointmentDate: d,
-        AppointmentTime: than.daws,
-        Number: "1"
-      };
-      than.$baseAPI
-        .POST(url, obj, seid)
-        .then(response => {
-          //console.log(response.Result);
-          if (response.Result == "1") {
-            MessageBox.alert(response.PromptMsg);
-            this.$emit("fun", false);
-          } else {
-            //console.log("123");
-          }
-        })
-        .catch(err => {
-          console.log(err);
-          MessageBox.alert(err.PromptMsg);
-        });
+      var time3 = Date.parse(than.value1) / 1000;
+      var time44 = Math.round(new Date().setHours(0, 0, 0, 0) / 1000);
+      console.log(time44);
+      if (time44 > time3) {
+        MessageBox.alert("预约日期无效，请重新选择日期");
+      } else {
+        var d = new Date(than.value1);
+        d = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+        var seid = localStorage.getItem("certificate");
+        var url = "https://www.hebkjcg.com/api/Appointment/Order";
+        var obj = {
+          NoticeID: than.id,
+          AppointmentDate: d,
+          AppointmentTime: than.daws,
+          Number: "1"
+        };
+        than.$baseAPI
+          .POST(url, obj, seid)
+          .then(response => {
+            //console.log(response.Result);
+            if (response.Result == "1") {
+              var a =
+                "<span style ='font-size:18px;'>" +
+                response.PromptMsg +
+                "</span>" + "<br />" + "<span> 请登录微信小程序“河北省科技成果展示中心预约系统”查看预约二维码，入展时使用</span>";
+              MessageBox.alert(a, {
+                dangerouslyUseHTMLString: true
+              });
+              this.$emit("fun", false);
+            } else {
+              //console.log("123");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            MessageBox.alert(err.PromptMsg);
+          });
+      }
     },
 
     asdwa: function() {

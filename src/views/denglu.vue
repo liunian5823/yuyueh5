@@ -124,7 +124,7 @@
               <el-input v-model="ruleForm.codes"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForms('ruleForm')">立即创建</el-button>
+              <el-button type="primary" @click="submitForms('ruleForm')">立即注册</el-button>
               <el-button @click="resetForm()">发送验证码</el-button>
             </el-form-item>
           </el-form>
@@ -153,7 +153,7 @@
               <el-input v-model="ruleForm.codes"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+              <el-button type="primary" @click="submitForm('ruleForm')">立即注册</el-button>
               <el-button @click="resetForm()">发送验证码</el-button>
             </el-form-item>
           </el-form>
@@ -353,7 +353,11 @@ export default {
           this.$baseAPI
             .POST(url, obj)
             .then(response => {
-              Message.success(response.PromptMsg);
+              if(response.Result =='1'){
+                Message.success(response.PromptMsg);
+                 this.$router.push({ name: "zhucechenggong" });
+              }
+              
             })
             .catch(err => {
               Message.error(err.PromptMsg);
@@ -403,7 +407,10 @@ export default {
           this.$baseAPI
             .POST(url, obj)
             .then(response => {
-              Message.success(response.PromptMsg);
+             if(response.Result =='1'){
+                Message.success(response.PromptMsg);
+                 this.$router.push({ name: "zhucechenggong" });
+              }
             })
             .catch(err => {
               Message.error(err.PromptMsg);

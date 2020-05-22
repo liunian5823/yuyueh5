@@ -29,20 +29,25 @@
           <span style="padding-left:10px">紧急通知</span>
         </div>
         <div
-          class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
+          class="col-xs-11 col-sm-11 col-md-11 col-lg-11"
           style="padding:0px;display: flex;justify-content: center;align-items: center;"
         >
-          <ul>
-            <li>野生动物保护工作事关生态平衡和生态文明建设，责任重大</li>
-          </ul>
-        </div>
-        <div
-          class="col-xs-5 col-sm-5 col-md-5 col-lg-5"
-          style="padding:0p; display: flex;justify-content: center;align-items: center;"
-        >
-          <ul>
-            <li>野生动物保护工作事关生态平衡和生态文明建设，责任重大</li>
-          </ul>
+          <div class="marquee-wrap">
+            <!-- 外框，固定宽度 -->
+            <div>
+              <div id="marquee-box" class="cl">
+                <!-- 内部滚动框 -->
+                <div id="marquee-text" @mouseenter="moveIn" @mouseleave="moveOut">
+                    <div v-for="(jstzs,index) in jstz" :key="index" @click="jjtzxq(jstzs.NoticeID)">
+                        {{jstzs.Title}}
+                    </div>
+                </div>
+              </div>
+              <div id="marquee-node"><div v-for="(jstzs,index) in jstz" :key="index">
+                        {{jstzs.Title}}
+                    </div></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -183,7 +188,10 @@ export default {
       yuyues: false,
       id: "0",
       dengluzt: "",
-      yonghuming: ""
+      yonghuming: "",
+   
+      marqueeTimer: null,
+      distance: 0 // 位移距离
     };
   },
   computed: {
@@ -198,6 +206,23 @@ export default {
   },
   mounted: function() {
     this.sendGetByObj();
+    
+  },
+  watch: {
+    lists(val) {
+      for (let i = 0; i < val.length; i++) {
+        this.text += "   " + val[i];
+      }
+      // 500毫秒后开始轮播
+      setTimeout(() => {
+        this.move();
+      }, 500);
+    }
+  },
+  destroyed() {
+    if (this.marqueeTimer) {
+      clearInterval(this.marqueeTimer);
+    }
   },
   methods: {
     // denglu() {
@@ -317,6 +342,7 @@ export default {
           if (response.Result == "1") {
             this.lsgg = response.RetValue.data;
             this.lsggmysl = response.RetValue.count;
+            this.qidong()
           }
         })
         .catch(err => {
@@ -388,11 +414,16 @@ export default {
     },
     yuyue: function(e) {
       //console.log(e);
-      if (this.yuyues == false) {
-        this.yuyues = true;
-        this.$refs.child.huoqushijian(e);
+      var seid = localStorage.getItem("certificate");
+      if (seid == null) {
+        this.$router.push({ name: "denglu" });
       } else {
-        this.yuyues = false;
+        if (this.yuyues == false) {
+          this.yuyues = true;
+          this.$refs.child.huoqushijian(e);
+        } else {
+          this.yuyues = false;
+        }
       }
     },
     change: function(data) {
@@ -402,6 +433,55 @@ export default {
     xiangqing: function(e) {
       //console.log(e);
       this.$router.push({ name: "xiangqing", query: { id: e } });
+    },
+    move() {
+      let that = this;
+      that.$nextTick(() => {
+        // 获取文字text 的计算后宽度 （由于overflow的存在，直接获取不到，需要独立的node计算）
+        let width = document
+          .getElementById("marquee-node")
+          .getBoundingClientRect().width;
+        let box = document.getElementById("marquee-box");
+        // 设置位移
+        that.marqueeTimer = setInterval(function() {
+          that.distance = that.distance - 1;
+          // 如果位移超过文字宽度，则回到起点
+          if (-that.distance >= (width*2.8) ) {
+            that.distance = 900;
+          }
+          // console.log(width)
+          box.style.transform = "translateX(" + that.distance + "px)";
+        }, 20);
+      });
+    },
+    qidong:function(){
+      this.move();
+    },
+    moveIn() {
+      clearInterval(this.marqueeTimer);
+    },
+    moveOut() {
+      this.move();
+    },
+    jjtzxq:function(e){
+      console.log(e);
+      // var than = this;
+      var url = "https://www.hebkjcg.com/api/Notice/NoticeGet";
+      var obj = {
+        NoticeID: e
+      };
+      this.$baseAPI
+        .GET(url, obj)
+        .then(response => {
+          //console.log(response);
+          var name = response.RetValue.Content.replace(/<[^>]+>/g, "");
+          var names = name.replace(/&nbsp;/g, "");
+          var namess = names.replace(/&quot;/g, "");
+          MessageBox.alert(namess);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };
@@ -616,5 +696,38 @@ ul {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.marquee-wrap {
+  overflow: hidden;
+}
+
+/* 移动框宽度设置 */
+#marquee-box {
+  width: 100%;
+}
+
+/* 文字一行显示 */
+#marquee-box div {
+  float: left;
+  line-height 40px
+}
+
+/* 设置前后间隔 */
+#marquee-text {
+  min-width: 100%;
+  height: 40px;
+  margin: 0 16px 0 0;
+  cursor: pointer;
+}
+
+/* 获取宽度的节点，隐藏掉 */
+#marquee-node {
+  position: absolute;
+  z-index: -999;
+  top: -999999px;
+}
+#marquee-text div{
+  margin-left 100px;
 }
 </style>
